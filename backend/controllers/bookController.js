@@ -72,10 +72,31 @@ const deleteBook = async (req, res) => {
   }
 };
 
+// @desc    Borrow a book
+// @route   POST /api/books/:id/borrow
+// @access  Private
+const borrowBook = async (req, res) => {
+  try {
+    // Assuming user ID is available in req.user (from auth middleware)
+    // For now, if req.user is not present, we can check req.body.userId
+    const userId = req.user ? req.user._id : req.body.userId;
+
+    if (!userId) {
+      return res.status(401).json({ message: 'User not authenticated' });
+    }
+
+    const borrowedBook = await bookService.borrowBook(req.params.id, userId);
+    res.json(borrowedBook);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
 module.exports = {
   getBooks,
   getBookById,
   createBook,
   updateBook,
   deleteBook,
+  borrowBook,
 };

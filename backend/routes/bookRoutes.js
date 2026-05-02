@@ -10,5 +10,6 @@ const {
 
 router.route('/').get(getBooks).post(createBook);
 router.route('/:id').get(getBookById).put(updateBook).delete(deleteBook);
+router.route('/:id/borrow').post(borrowBook);
 
 module.exports = router;
