@@ -22,6 +22,9 @@ const Navbar = () => {
         </Link>
         <ul className="navbar-nav">
           <li><Link to="/" className="nav-link">Home</Link></li>
+          {user && user.isAdmin && (
+            <li><Link to="/add-book" className="nav-link">Add Book</Link></li>
+          )}
           <li><Link to="/my-library" className="nav-link">My Library</Link></li>
           {user ? (
             <li>
