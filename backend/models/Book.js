@@ -38,6 +38,13 @@ const bookSchema = mongoose.Schema(
       type: Number,
       default: 1,
     },
+    borrowedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    dueDate: {
+      type: Date,
+    },
   },
   {
     timestamps: true,
