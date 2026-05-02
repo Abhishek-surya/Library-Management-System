@@ -20,4 +20,8 @@ api.interceptors.request.use(
   }
 );
 
+// Book API calls
+export const updateBook = (id, bookData) => api.put(`/books/${id}`, bookData);
+export const deleteBook = (id) => api.delete(`/books/${id}`);
+
 export default api;
