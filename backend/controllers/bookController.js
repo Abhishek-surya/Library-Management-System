@@ -5,7 +5,8 @@ const bookService = require('../services/bookService');
 // @access  Public
 const getBooks = async (req, res) => {
   try {
-    const books = await bookService.getBooks();
+    const { category, genre, search } = req.query;
+    const books = await bookService.getBooks({ category, genre, search });
     res.json(books);
   } catch (error) {
     res.status(500).json({ message: error.message });

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api, { updateBook } from '../services/api';
+import { CATEGORIES, GENRES } from '../constants/bookConstants';
 
 const EditBook = () => {
   const { id } = useParams();
@@ -100,25 +101,33 @@ const EditBook = () => {
           <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
             <div className="form-group" style={{ flex: 1 }}>
               <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Category</label>
-              <input
-                type="text"
+              <select
                 name="category"
                 className="form-control"
                 value={formData.category}
                 onChange={handleChange}
                 required
-              />
+              >
+                <option value="">Select Category</option>
+                {CATEGORIES.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
             </div>
             <div className="form-group" style={{ flex: 1 }}>
               <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Genre</label>
-              <input
-                type="text"
+              <select
                 name="genre"
                 className="form-control"
                 value={formData.genre}
                 onChange={handleChange}
                 required
-              />
+              >
+                <option value="">Select Genre</option>
+                {GENRES.map((genre) => (
+                  <option key={genre} value={genre}>{genre}</option>
+                ))}
+              </select>
             </div>
           </div>
 
