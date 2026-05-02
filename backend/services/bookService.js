@@ -1,7 +1,24 @@
 const Book = require('../models/Book');
 
-const getBooks = async () => {
-  return await Book.find({});
+const getBooks = async (filters = {}) => {
+  const query = {};
+  
+  if (filters.category) {
+    query.category = filters.category;
+  }
+  
+  if (filters.genre) {
+    query.genre = filters.genre;
+  }
+  
+  if (filters.search) {
+    query.$or = [
+      { title: { $regex: filters.search, $options: 'i' } },
+      { author: { $regex: filters.search, $options: 'i' } },
+    ];
+  }
+
+  return await Book.find(query);
 };
 
 const getBookById = async (id) => {

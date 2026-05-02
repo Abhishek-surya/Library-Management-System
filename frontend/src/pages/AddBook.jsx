@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createBook } from '../services/api';
+import { CATEGORIES, GENRES } from '../constants/bookConstants';
 
 const AddBook = () => {
   const [formData, setFormData] = useState({
@@ -79,27 +80,33 @@ const AddBook = () => {
           <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
             <div className="form-group" style={{ flex: 1 }}>
               <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Category</label>
-              <input
-                type="text"
+              <select
                 name="category"
                 className="form-control"
                 value={formData.category}
                 onChange={handleChange}
-                placeholder="e.g. Fiction"
                 required
-              />
+              >
+                <option value="">Select Category</option>
+                {CATEGORIES.map((cat) => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
             </div>
             <div className="form-group" style={{ flex: 1 }}>
               <label style={{ display: 'block', marginBottom: '0.5rem', color: 'var(--text-secondary)' }}>Genre</label>
-              <input
-                type="text"
+              <select
                 name="genre"
                 className="form-control"
                 value={formData.genre}
                 onChange={handleChange}
-                placeholder="e.g. Sci-Fi"
                 required
-              />
+              >
+                <option value="">Select Genre</option>
+                {GENRES.map((genre) => (
+                  <option key={genre} value={genre}>{genre}</option>
+                ))}
+              </select>
             </div>
           </div>
 

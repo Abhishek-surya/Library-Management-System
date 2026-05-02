@@ -1,28 +1,43 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import api, { deleteBook } from '../services/api';
 import authService from '../services/authService';
+import { CATEGORIES, GENRES } from '../constants/bookConstants';
 
 const Home = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState('');
+  const [category, setCategory] = useState('');
+  const [genre, setGenre] = useState('');
+  
   const user = authService.getCurrentUser();
 
-  const fetchBooks = async () => {
+  const fetchBooks = useCallback(async () => {
     setLoading(true);
     try {
-      const response = await api.get('/books');
+      const params = new URLSearchParams();
+      if (search) params.append('search', search);
+      if (category) params.append('category', category);
+      if (genre) params.append('genre', genre);
+
+      const response = await api.get(`/books?${params.toString()}`);
       setBooks(response.data);
     } catch (error) {
       console.error('Error fetching books:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [search, category, genre]);
 
   useEffect(() => {
     fetchBooks();
-  }, []);
+  }, [fetchBooks]);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    fetchBooks();
+  };
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this book?')) {
@@ -47,15 +62,38 @@ const Home = () => {
             Explore thousands of books, from timeless classics to modern masterpieces. Search by title, author, category, or genre.
           </p>
           
-          <form className="search-container" style={{ maxWidth: '800px', margin: '0 auto', background: 'var(--bg-tertiary)', padding: '1rem', borderRadius: '12px', border: '1px solid var(--border-color)', display: 'flex', gap: '1rem', flexWrap: 'wrap' }} onSubmit={(e) => e.preventDefault()}>
-            <input type="text" className="form-control search-input" style={{ flex: 1, minWidth: '250px' }} placeholder="Search books by title, author, or ISBN..." />
+          <form className="search-container" style={{ maxWidth: '900px', margin: '0 auto', background: 'var(--bg-tertiary)', padding: '1rem', borderRadius: '12px', border: '1px solid var(--border-color)', display: 'flex', gap: '1rem', flexWrap: 'wrap' }} onSubmit={handleSearch}>
+            <input 
+              type="text" 
+              className="form-control search-input" 
+              style={{ flex: 2, minWidth: '200px' }} 
+              placeholder="Search by title or author..." 
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
             
-            <select className="form-control filter-select" style={{ width: '150px' }}>
+            <select 
+              className="form-control filter-select" 
+              style={{ flex: 1, minWidth: '150px' }}
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+            >
               <option value="">All Categories</option>
-              <option value="fiction">Fiction</option>
-              <option value="non-fiction">Non-Fiction</option>
-              <option value="science">Science</option>
-              <option value="history">History</option>
+              {CATEGORIES.map(cat => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
+            </select>
+
+            <select 
+              className="form-control filter-select" 
+              style={{ flex: 1, minWidth: '150px' }}
+              value={genre}
+              onChange={(e) => setGenre(e.target.value)}
+            >
+              <option value="">All Genres</option>
+              {GENRES.map(g => (
+                <option key={g} value={g}>{g}</option>
+              ))}
             </select>
             
             <button type="submit" className="btn btn-primary">Search</button>
