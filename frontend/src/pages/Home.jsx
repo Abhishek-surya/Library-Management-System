@@ -1,24 +1,39 @@
 import React, { useState, useEffect } from 'react';
-import api from '../services/api';
+import api, { deleteBook } from '../services/api';
+import authService from '../services/authService';
 
 const Home = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const user = authService.getCurrentUser();
+
+  const fetchBooks = async () => {
+    setLoading(true);
+    try {
+      const response = await api.get('/books');
+      setBooks(response.data);
+    } catch (error) {
+      console.error('Error fetching books:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        const response = await api.get('/books');
-        setBooks(response.data);
-      } catch (error) {
-        console.error('Error fetching books:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchBooks();
   }, []);
+
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this book?')) {
+      try {
+        await deleteBook(id);
+        fetchBooks(); // Refresh the list
+      } catch (error) {
+        console.error('Error deleting book:', error);
+        alert('Failed to delete book');
+      }
+    }
+  };
 
   return (
     <>
@@ -71,6 +86,21 @@ const Home = () => {
                       </span>
                       <span style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>{book.category}</span>
                     </div>
+                    
+                    {user && (
+                      <div className="book-actions" style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem' }}>
+                        <button className="btn btn-secondary" style={{ flex: 1, fontSize: '0.8rem', padding: '0.4rem' }}>
+                          Edit
+                        </button>
+                        <button 
+                          className="btn btn-danger" 
+                          style={{ flex: 1, fontSize: '0.8rem', padding: '0.4rem' }}
+                          onClick={() => handleDelete(book._id)}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))
