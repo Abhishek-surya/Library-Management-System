@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import api, { deleteBook } from '../services/api';
 import authService from '../services/authService';
 
@@ -89,9 +90,13 @@ const Home = () => {
                     
                     {user && (
                       <div className="book-actions" style={{ marginTop: '1rem', display: 'flex', gap: '0.5rem' }}>
-                        <button className="btn btn-secondary" style={{ flex: 1, fontSize: '0.8rem', padding: '0.4rem' }}>
+                        <Link 
+                          to={`/edit-book/${book._id}`} 
+                          className="btn btn-secondary" 
+                          style={{ flex: 1, fontSize: '0.8rem', padding: '0.4rem', textAlign: 'center', textDecoration: 'none' }}
+                        >
                           Edit
-                        </button>
+                        </Link>
                         <button 
                           className="btn btn-danger" 
                           style={{ flex: 1, fontSize: '0.8rem', padding: '0.4rem' }}
